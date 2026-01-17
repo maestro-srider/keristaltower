@@ -1,137 +1,239 @@
 <!doctype html>
-<html lang="es" style="height:100%">
+<html lang="es" style="height: 100%;">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bitácora de Aprendizaje – SdA</title>
 
   <style>
-    :root{
-      --bg:#f5f2e8;
-      --card:#fff;
-      --text:#1f2937;
-      --muted:#6b7280;
-      --border:#e5e7eb;
-      --primary:#8b5cf6;
-      --primary2:#7c3aed;
-      --danger:#ef4444;
-      --danger2:#dc2626;
-      --shadow:0 2px 8px rgba(0,0,0,.08);
-      --radius:12px;
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      background: transparent;
+      color: #1f2937;
+    }
+    html { height: 100%; }
+    * { box-sizing: border-box; }
+
+    #app-wrapper { width: 100%; height: 100%; overflow: auto; }
+
+    /* ✅ PORTADA con imagen y botón más arriba */
+    .splash-screen {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+
+      /* antes 25%, ahora 10% para subir aprox 15% */
+      padding-top: 10%;
+
+      background-image: url("portada.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      padding:0;
-      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-      background:transparent;
-      color:var(--text);
+    .splash-btn {
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #8b5cf6;
+      color: white;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+      backdrop-filter: blur(2px);
+    }
+    .splash-btn:hover {
+      background: #7c3aed;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
     }
 
-    #app-wrapper{width:100%;height:100%;overflow:auto}
-
-    /* PORTADA */
-    .splash-screen{
-      width:100%;
-      height:100%;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-
-      /* Subimos el botón un 15% (antes 25%) */
-      padding-top:10%;
-
-      background-image:url("portada.jpg");
-      background-size:cover;
-      background-position:center;
-      background-repeat:no-repeat;
+    .main-app {
+      width: 100%;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      background: #f5f2e8;
     }
 
-    .splash-btn{
-      padding:16px 32px;
-      font-size:16px;
-      font-weight:600;
-      border:none;
-      border-radius:12px;
-      cursor:pointer;
-      background:rgba(139,92,246,0.95);
-      color:white;
-      transition:transform .2s, background .2s, box-shadow .2s;
-      box-shadow:0 4px 12px rgba(139,92,246,.30);
-      backdrop-filter:blur(2px);
+    .app-header {
+      background: white;
+      padding: 20px 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    .splash-btn:hover{
-      background:var(--primary2);
-      transform:translateY(-2px);
-      box-shadow:0 6px 16px rgba(139,92,246,.40);
+    .app-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1f2937;
+      margin: 0 0 15px 0;
     }
 
-    .main-app{
-      width:100%;
-      height:100%;
-      display:none;
-      flex-direction:column;
-      background:var(--bg);
+    .tabs-container { display: flex; gap: 10px; }
+
+    .tab-btn {
+      padding: 10px 24px;
+      border: none;
+      background: transparent;
+      color: #6b7280;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { background: #f3f4f6; color: #374151; }
+    .tab-btn.active { background: #8b5cf6; color: white; }
+
+    .content-area { flex: 1; overflow: auto; padding: 30px; }
+
+    .tab-content { display: none; max-width: 1200px; margin: 0 auto; }
+    .tab-content.active { display: block; }
+
+    .section-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
-    .app-header{
-      background:#fff;
-      padding:20px 30px;
-      box-shadow:0 2px 8px rgba(0,0,0,.10);
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1f2937;
+      margin: 0 0 20px 0;
     }
 
-    .app-title{
-      font-size:24px;
-      font-weight:700;
-      margin:0 0 15px 0;
+    .students-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
     }
 
-    .tabs-container{display:flex;gap:10px}
+    .student-item { display: flex; align-items: center; gap: 10px; }
+    .student-label { font-weight: 500; color: #6b7280; min-width: 80px; }
 
-    .tab-btn{
-      padding:10px 24px;
-      border:none;
-      background:transparent;
-      color:var(--muted);
-      font-size:16px;
-      font-weight:500;
-      cursor:pointer;
-      border-radius:8px;
+    .text-input, .select-input, .number-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.2s;
+      background: #fff;
+    }
+    .text-input:focus, .select-input:focus, .number-input:focus { outline: none; border-color: #8b5cf6; }
+
+    .btn-primary, .btn-secondary, .btn-danger {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: #8b5cf6; color: white; }
+    .btn-primary:hover { background: #7c3aed; }
+    .btn-secondary { background: #e5e7eb; color: #374151; }
+    .btn-secondary:hover { background: #d1d5db; }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-danger:hover { background: #dc2626; }
+
+    .btn-small { padding: 6px 12px; font-size: 13px; }
+
+    .trophy-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .trophy-range { font-weight: 600; color: #8b5cf6; min-width: 60px; }
+
+    .data-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .notes-table, .ranking-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+    .notes-table th, .ranking-table th {
+      background: #f9fafb;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .notes-table td, .ranking-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
     }
 
-    .tab-btn:hover{background:#f3f4f6;color:#374151}
-    .tab-btn.active{background:var(--primary);color:white}
+    .ranking-position { font-weight: 700; color: #8b5cf6; font-size: 18px; }
+    .ranking-grade { font-weight: 600; color: #1f2937; }
 
-    .content-area{flex:1;overflow:auto;padding:30px}
-    .tab-content{display:none;max-width:1200px;margin:0 auto}
-    .tab-content.active{display:block}
+    .no-data-message { text-align: center; padding: 40px; color: #9ca3af; font-size: 16px; }
 
-    .section-card{
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:24px;
-      margin-bottom:24px;
-      box-shadow:var(--shadow);
+    .confirm-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .confirm-modal.active { display: flex; }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 400px;
+      width: 90%;
+    }
+    .modal-title { font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 12px 0; }
+    .modal-message { color: #6b7280; margin-bottom: 20px; }
+    .modal-buttons { display: flex; gap: 12px; justify-content: flex-end; }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #1f2937;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 2000;
+      animation: slideIn 0.25s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(220px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
 
-    .section-title{
-      font-size:20px;
-      font-weight:600;
-      margin:0 0 20px 0;
-    }
-
-    .toast{
-      position:fixed;
-      top:20px;
-      right:20px;
-      background:#1f2937;
-      color:white;
-      padding:16px 24px;
-      border-radius:8px;
-      z-index:2000;
+    .subjects-list { display: flex; flex-direction: column; gap: 8px; }
+    .subject-item {
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      font-weight: 500;
+      color: #374151;
     }
   </style>
 </head>
@@ -139,45 +241,937 @@
 <body>
   <div id="app-wrapper">
 
-    <!-- PORTADA -->
+    <!-- Portada -->
     <div id="splash" class="splash-screen">
-      <button id="access-btn" class="splash-btn">
-        Acceder a la Bitácora
-      </button>
+      <button id="access-btn" class="splash-btn">Acceder a la Bitácora</button>
     </div>
 
-    <!-- APP -->
+    <!-- Aplicación principal -->
     <main id="main-app" class="main-app">
       <header class="app-header">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
-          <h1 class="app-title">Bitácora de Aprendizaje – SdA (ECDD / Torre de Keristal)</h1>
-          <button id="back-btn">← Volver</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;">
+          <h1 id="app-title" class="app-title" style="margin:0;">Bitácora de Aprendizaje – SdA (ECDD / Torre de Keristal)</h1>
+          <button id="back-to-home-btn" class="btn-secondary" style="padding:8px 16px;">← Volver al Inicio</button>
         </div>
         <nav class="tabs-container">
-          <button class="tab-btn active">Configuración</button>
-          <button class="tab-btn">Notas</button>
-          <button class="tab-btn">Resultados</button>
+          <button class="tab-btn active" data-tab="config">Configuración</button>
+          <button class="tab-btn" data-tab="notes">Notas</button>
+          <button class="tab-btn" data-tab="results">Resultados</button>
         </nav>
       </header>
 
       <div class="content-area">
-        <div class="section-card">
-          <p>La aplicación se ha cargado correctamente.</p>
+
+        <!-- TAB 1 -->
+        <div id="tab-config" class="tab-content active">
+          <section class="section-card">
+            <h2 class="section-title">A) Estudiantes</h2>
+            <div class="students-grid" id="students-grid"></div>
+          </section>
+
+          <section class="section-card">
+            <h2 class="section-title">B) Asignaturas (fijas)</h2>
+            <div class="subjects-list">
+              <div class="subject-item">Lengua</div>
+              <div class="subject-item">Matemáticas</div>
+              <div class="subject-item">Conocimiento del Medio (Cono)</div>
+            </div>
+          </section>
+
+          <section class="section-card">
+            <h2 class="section-title">C) Notas</h2>
+            <p style="color:#6b7280;margin:0;">Escala numérica: 0 – 10 (movimiento de 0,5 en 0,5)</p>
+          </section>
+
+          <section class="section-card">
+            <h2 class="section-title">D) Trofeos</h2>
+            <div id="trophies-list">
+              <div class="trophy-item"><span class="trophy-range">&lt; 5</span> <span style="color:#6b7280;">Sin trofeo</span></div>
+              <div class="trophy-item"><span class="trophy-range">≥ 5</span> <span>📜 Pergamino del Aprendiz</span></div>
+              <div class="trophy-item"><span class="trophy-range">≥ 6</span> <span>🪶 Sello del Escriba (acumula 📜)</span></div>
+              <div class="trophy-item"><span class="trophy-range">≥ 7</span> <span>🧭 Insignia del Explorador (acumula 📜 🪶)</span></div>
+              <div class="trophy-item"><span class="trophy-range">≥ 9</span> <span>🏅 Emblema del Maestro (acumula 📜 🪶 🧭)</span></div>
+              <div class="trophy-item"><span class="trophy-range">= 10</span> <span>👑 Corona de Keristal (acumula TODOS)</span></div>
+            </div>
+          </section>
+
+          <section class="section-card">
+            <h2 class="section-title">E) Datos</h2>
+            <div class="data-buttons">
+              <button id="export-btn" class="btn-primary">Exportar Datos (JSON)</button>
+              <button id="export-csv-btn" class="btn-primary">Exportar CSV</button>
+              <button id="import-btn" class="btn-secondary">Importar Datos</button>
+              <button id="reset-btn" class="btn-danger">Resetear Todo</button>
+            </div>
+          </section>
         </div>
+
+        <!-- TAB 2 -->
+        <div id="tab-notes" class="tab-content">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:30px;">
+
+            <section class="section-card" style="margin-bottom:0;">
+              <h2 class="section-title" style="font-size:18px;">Unidad / SdA</h2>
+              <select id="unit-selector" class="select-input" style="margin-bottom:12px;">
+                <option value="">Seleccionar Unidad...</option>
+              </select>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <button id="create-unit-btn" class="btn-primary btn-small">Crear Unidad</button>
+                <button id="rename-unit-btn" class="btn-secondary btn-small">Renombrar Unidad</button>
+                <button id="delete-unit-btn" class="btn-danger btn-small">Eliminar Unidad</button>
+              </div>
+            </section>
+
+            <section class="section-card" style="margin-bottom:0;">
+              <h2 class="section-title" style="font-size:18px;">Sesión</h2>
+              <select id="session-selector" class="select-input" style="margin-bottom:12px;">
+                <option value="">Seleccionar Sesión...</option>
+              </select>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <button id="add-session-notes-btn" class="btn-primary btn-small">Añadir Sesión</button>
+                <button id="edit-session-btn" class="btn-secondary btn-small">Editar Sesión</button>
+                <button id="delete-session-notes-btn" class="btn-danger btn-small">Eliminar Sesión</button>
+              </div>
+            </section>
+
+            <section class="section-card" style="margin-bottom:0;">
+              <h2 class="section-title" style="font-size:18px;">Asignatura</h2>
+              <select id="subject-selector" class="select-input">
+                <option value="">Seleccionar Asignatura...</option>
+                <option value="lengua">Lengua</option>
+                <option value="matematicas">Matemáticas</option>
+                <option value="cono">Conocimiento del Medio (Cono)</option>
+              </select>
+            </section>
+          </div>
+
+          <section class="section-card">
+            <div id="notes-table-container"></div>
+            <div id="clear-notes-container" style="margin-top:20px;display:none;">
+              <button id="clear-notes-btn" class="btn-danger">Limpiar Notas de esta Sesión/Asignatura</button>
+            </div>
+          </section>
+        </div>
+
+        <!-- TAB 3 -->
+        <div id="tab-results" class="tab-content">
+          <section class="section-card">
+            <h2 class="section-title">A) Ranking Global</h2>
+            <div id="ranking-global-container"></div>
+          </section>
+
+          <section class="section-card">
+            <h2 class="section-title">B) Ranking por Asignatura</h2>
+
+            <h3 style="font-size:16px;font-weight:600;margin:0 0 12px 0;">Lengua</h3>
+            <div id="ranking-lengua-container"></div>
+
+            <h3 style="font-size:16px;font-weight:600;margin:24px 0 12px 0;">Matemáticas</h3>
+            <div id="ranking-matematicas-container"></div>
+
+            <h3 style="font-size:16px;font-weight:600;margin:24px 0 12px 0;">Conocimiento del Medio (Cono)</h3>
+            <div id="ranking-cono-container"></div>
+          </section>
+
+          <section class="section-card">
+            <h2 class="section-title">C) Evolución por Unidad</h2>
+            <div id="evolution-container"></div>
+          </section>
+        </div>
+
       </div>
     </main>
+  </div>
 
+  <!-- Modal confirmación -->
+  <div id="confirm-modal" class="confirm-modal">
+    <div class="modal-content">
+      <h3 class="modal-title" id="modal-title">Confirmar</h3>
+      <p class="modal-message" id="modal-message"></p>
+      <div class="modal-buttons">
+        <button id="modal-cancel" class="btn-secondary">Cancelar</button>
+        <button id="modal-confirm" class="btn-danger">Confirmar</button>
+      </div>
+    </div>
   </div>
 
   <script>
-    document.getElementById("access-btn").addEventListener("click", () => {
-      document.getElementById("splash").style.display = "none";
-      document.getElementById("main-app").style.display = "flex";
-    });
+    const defaultConfig = {
+      app_title: 'Bitácora de Aprendizaje – SdA (ECDD / Torre de Keristal)',
+      access_button_text: 'Acceder a la Bitácora'
+    };
 
-    document.getElementById("back-btn").addEventListener("click", () => {
-      document.getElementById("main-app").style.display = "none";
-      document.getElementById("splash").style.display = "flex";
+    let appData = {
+      students: Array.from({length: 8}, (_, i) => `Alumno ${i + 1}`),
+      units: [],
+      sessions: {},
+      notes: {},
+      trophies: {
+        5: { name: 'Pergamino del Aprendiz', icon: '📜' },
+        6: { name: 'Sello del Escriba', icon: '🪶' },
+        7: { name: 'Insignia del Explorador', icon: '🧭' },
+        9: { name: 'Emblema del Maestro', icon: '🏅' },
+        10: { name: 'Corona de Keristal', icon: '👑' }
+      }
+    };
+
+    let currentNotesContext = { unit: null, session: null, subject: 'lengua' };
+    let confirmCallback = null;
+
+    function loadData() {
+      const stored = localStorage.getItem('bitacora_sda_data');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          appData = { ...appData, ...parsed };
+        } catch {}
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem('bitacora_sda_data', JSON.stringify(appData));
+    }
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2200);
+    }
+
+    function showConfirm(title, message, callback) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-message').textContent = message;
+      document.getElementById('confirm-modal').classList.add('active');
+      confirmCallback = callback;
+    }
+
+    function applyConfig(config) {
+      const cfg = { ...defaultConfig, ...config };
+      document.getElementById('app-title').textContent = cfg.app_title;
+      document.getElementById('access-btn').textContent = cfg.access_button_text;
+    }
+
+    function renderStudents() {
+      const container = document.getElementById('students-grid');
+      container.innerHTML = '';
+
+      const frag = document.createDocumentFragment();
+
+      appData.students.forEach((name, index) => {
+        const item = document.createElement('div');
+        item.className = 'student-item';
+        item.innerHTML = `
+          <span class="student-label">Alumno ${index + 1}:</span>
+          <input type="text" class="text-input" value="${escapeHtml(name)}" data-student="${index}">
+        `;
+        frag.appendChild(item);
+      });
+
+      container.appendChild(frag);
+
+      container.querySelectorAll('input').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const index = parseInt(e.target.dataset.student, 10);
+          appData.students[index] = e.target.value || `Alumno ${index + 1}`;
+          saveData();
+          renderNotesTable();
+          renderResults();
+        });
+      });
+    }
+
+    function updateUnitSelectors() {
+      const selector = document.getElementById('unit-selector');
+      const currentValue = selector.value;
+      selector.innerHTML = '<option value="">Seleccionar Unidad...</option>';
+
+      appData.units.forEach(unit => {
+        const option = document.createElement('option');
+        option.value = unit;
+        option.textContent = unit;
+        selector.appendChild(option);
+      });
+
+      if (appData.units.includes(currentValue)) selector.value = currentValue;
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+    function updateSessionSelectors() {
+      const unitSelector = document.getElementById('unit-selector');
+      const sessionSelector = document.getElementById('session-selector');
+      const selectedUnit = unitSelector.value;
+
+      sessionSelector.innerHTML = '<option value="">Seleccionar Sesión...</option>';
+
+      if (selectedUnit && appData.sessions[selectedUnit]) {
+        const sessions = appData.sessions[selectedUnit];
+
+        const sortedSessions = [...sessions].sort((a, b) => {
+          const dateA = typeof a === 'string' ? '' : a.date;
+          const dateB = typeof b === 'string' ? '' : b.date;
+          if (!dateA || !dateB) return 0;
+          return new Date(dateA) - new Date(dateB);
+        });
+
+        sortedSessions.forEach(session => {
+          const option = document.createElement('option');
+          const sessionName = typeof session === 'string' ? session : session.name;
+          const sessionDate = typeof session === 'string' ? '' : session.date;
+
+          option.value = sessionName;
+          option.textContent = sessionDate ? `${sessionName} (${formatDate(sessionDate)})` : sessionName;
+          sessionSelector.appendChild(option);
+        });
+      }
+    }
+
+    function renderNotesTable() {
+      const container = document.getElementById('notes-table-container');
+      const clearContainer = document.getElementById('clear-notes-container');
+      const unit = currentNotesContext.unit;
+      const session = currentNotesContext.session;
+      const subject = currentNotesContext.subject;
+
+      if (!unit || !session || !subject) {
+        container.innerHTML = '<p class="no-data-message">Selecciona Unidad, Sesión y Asignatura para introducir notas</p>';
+        clearContainer.style.display = 'none';
+        return;
+      }
+
+      clearContainer.style.display = 'block';
+      const notesKey = `${unit}|${session}|${subject}`;
+      const notes = appData.notes[notesKey] || {};
+
+      let tableHTML = `
+        <table class="notes-table">
+          <thead>
+            <tr>
+              <th style="width: 100px;">Nº</th>
+              <th>Estudiante</th>
+              <th style="width: 150px;">Nota (0-10)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      appData.students.forEach((student, index) => {
+        const currentNote = notes[index] !== undefined ? notes[index] : '';
+        tableHTML += `
+          <tr>
+            <td style="font-weight: 600;">${index + 1}</td>
+            <td>${escapeHtml(student)}</td>
+            <td>
+              <input
+                type="number"
+                class="number-input"
+                min="0"
+                max="10"
+                step="0.5"
+                value="${currentNote}"
+                data-student-index="${index}"
+                style="width: 100%;">
+            </td>
+          </tr>
+        `;
+      });
+
+      tableHTML += '</tbody></table>';
+      container.innerHTML = tableHTML;
+
+      container.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const studentIndex = parseInt(e.target.dataset.studentIndex, 10);
+          let value = parseFloat(e.target.value);
+
+          if (e.target.value === '') {
+            delete notes[studentIndex];
+          } else {
+            if (value < 0) value = 0;
+            if (value > 10) value = 10;
+            e.target.value = value;
+            notes[studentIndex] = value;
+          }
+
+          appData.notes[notesKey] = notes;
+          saveData();
+          renderResults();
+        });
+      });
+    }
+
+    function calculateStudentAverage(studentIndex, filterSubject = null) {
+      let sum = 0;
+      let count = 0;
+
+      for (const [key, notes] of Object.entries(appData.notes)) {
+        const parts = key.split('|');
+        const subject = parts[2];
+        if (filterSubject && subject !== filterSubject) continue;
+
+        if (notes[studentIndex] !== undefined) {
+          sum += notes[studentIndex];
+          count++;
+        }
+      }
+
+      return count > 0 ? sum / count : null;
+    }
+
+    function getTrophiesForAverage(average) {
+      const trophies = [];
+      if (average < 5) return trophies;
+      if (average >= 5) trophies.push(appData.trophies[5]);
+      if (average >= 6) trophies.push(appData.trophies[6]);
+      if (average >= 7) trophies.push(appData.trophies[7]);
+      if (average >= 9) trophies.push(appData.trophies[9]);
+      if (average >= 10) trophies.push(appData.trophies[10]);
+      return trophies;
+    }
+
+    function renderRankingGlobal() {
+      const container = document.getElementById('ranking-global-container');
+
+      const rankings = appData.students.map((name, index) => ({
+        name,
+        average: calculateStudentAverage(index)
+      })).filter(r => r.average !== null);
+
+      if (rankings.length === 0) {
+        container.innerHTML = '<p class="no-data-message">No hay notas registradas</p>';
+        return;
+      }
+
+      rankings.sort((a, b) => b.average - a.average);
+
+      let tableHTML = `
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th style="width: 80px;">Posición</th>
+              <th>Estudiante</th>
+              <th style="width: 120px;">Media</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      rankings.forEach((r, index) => {
+        const trophies = getTrophiesForAverage(r.average);
+        const topTrophy = trophies.length > 0 ? trophies[trophies.length - 1].icon : '';
+
+        tableHTML += `
+          <tr>
+            <td class="ranking-position">${index + 1}º</td>
+            <td><span style="font-size: 20px; margin-right: 8px;">${topTrophy}</span>${escapeHtml(r.name)}</td>
+            <td class="ranking-grade">${r.average.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+
+      tableHTML += '</tbody></table>';
+      container.innerHTML = tableHTML;
+    }
+
+    function renderRankingBySubject() {
+      const subjects = {
+        'lengua': 'ranking-lengua-container',
+        'matematicas': 'ranking-matematicas-container',
+        'cono': 'ranking-cono-container'
+      };
+
+      for (const [subject, containerId] of Object.entries(subjects)) {
+        const container = document.getElementById(containerId);
+
+        const rankings = appData.students.map((name, index) => ({
+          name,
+          average: calculateStudentAverage(index, subject)
+        })).filter(r => r.average !== null);
+
+        if (rankings.length === 0) {
+          container.innerHTML = '<p class="no-data-message">No hay notas registradas</p>';
+          continue;
+        }
+
+        rankings.sort((a, b) => b.average - a.average);
+
+        let tableHTML = `
+          <table class="ranking-table">
+            <thead>
+              <tr>
+                <th style="width: 80px;">Posición</th>
+                <th>Estudiante</th>
+                <th style="width: 120px;">Media</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        rankings.forEach((r, index) => {
+          const trophies = getTrophiesForAverage(r.average);
+          const topTrophy = trophies.length > 0 ? trophies[trophies.length - 1].icon : '';
+
+          tableHTML += `
+            <tr>
+              <td class="ranking-position">${index + 1}º</td>
+              <td><span style="font-size: 20px; margin-right: 8px;">${topTrophy}</span>${escapeHtml(r.name)}</td>
+              <td class="ranking-grade">${r.average.toFixed(2)}</td>
+            </tr>
+          `;
+        });
+
+        tableHTML += '</tbody></table>';
+        container.innerHTML = tableHTML;
+      }
+    }
+
+    function renderEvolution() {
+      const container = document.getElementById('evolution-container');
+
+      if (appData.units.length === 0) {
+        container.innerHTML = '<p class="no-data-message">No hay unidades creadas</p>';
+        return;
+      }
+
+      let tableHTML = `
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th>Estudiante</th>
+              ${appData.units.map(u => `<th>${escapeHtml(u)}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      appData.students.forEach((studentName, studentIndex) => {
+        tableHTML += `<tr><td><strong>${escapeHtml(studentName)}</strong></td>`;
+
+        appData.units.forEach(unit => {
+          let sum = 0;
+          let count = 0;
+
+          for (const [key, notes] of Object.entries(appData.notes)) {
+            const noteUnit = key.split('|')[0];
+            if (noteUnit === unit && notes[studentIndex] !== undefined) {
+              sum += notes[studentIndex];
+              count++;
+            }
+          }
+
+          const avg = count > 0 ? (sum / count).toFixed(2) : '-';
+          tableHTML += `<td style="text-align: center;">${avg}</td>`;
+        });
+
+        tableHTML += '</tr>';
+      });
+
+      tableHTML += '</tbody></table>';
+      container.innerHTML = tableHTML;
+    }
+
+    function renderResults() {
+      renderRankingGlobal();
+      renderRankingBySubject();
+      renderEvolution();
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadData();
+      applyConfig(defaultConfig);
+
+      renderStudents();
+      updateUnitSelectors();
+      renderResults();
+
+      // Acceso
+      document.getElementById('access-btn').addEventListener('click', () => {
+        document.getElementById('splash').style.display = 'none';
+        document.getElementById('main-app').style.display = 'flex';
+      });
+
+      // Volver
+      document.getElementById('back-to-home-btn').addEventListener('click', () => {
+        document.getElementById('main-app').style.display = 'none';
+        document.getElementById('splash').style.display = 'flex';
+      });
+
+      // Tabs
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+        });
+      });
+
+      // Selectores
+      document.getElementById('unit-selector').addEventListener('change', (e) => {
+        currentNotesContext.unit = e.target.value;
+        updateSessionSelectors();
+        currentNotesContext.session = null;
+        document.getElementById('session-selector').value = '';
+        renderNotesTable();
+      });
+
+      document.getElementById('session-selector').addEventListener('change', (e) => {
+        currentNotesContext.session = e.target.value;
+        renderNotesTable();
+      });
+
+      document.getElementById('subject-selector').addEventListener('change', (e) => {
+        currentNotesContext.subject = e.target.value;
+        renderNotesTable();
+      });
+
+      // Exportar CSV
+      document.getElementById('export-csv-btn').addEventListener('click', () => {
+        let csvContent = 'Unidad,Sesión,Fecha,Asignatura,';
+        csvContent += appData.students.map((s, i) => `Alumno ${i + 1} (${s})`).join(',') + '\n';
+
+        const allNotes = [];
+        for (const [key, notes] of Object.entries(appData.notes)) {
+          const [unit, session, subject] = key.split('|');
+
+          let sessionDate = '';
+          if (appData.sessions[unit]) {
+            const sessionObj = appData.sessions[unit].find(s => (typeof s === 'string' ? s : s.name) === session);
+            if (sessionObj && typeof sessionObj !== 'string') sessionDate = formatDate(sessionObj.date);
+          }
+
+          const subjectName = subject === 'lengua' ? 'Lengua' :
+                             subject === 'matematicas' ? 'Matemáticas' :
+                             'Conocimiento del Medio';
+
+          allNotes.push({ unit, session, date: sessionDate, subject: subjectName, notes });
+        }
+
+        allNotes.sort((a, b) => a.unit.localeCompare(b.unit) || a.session.localeCompare(b.session) || a.subject.localeCompare(b.subject));
+
+        allNotes.forEach(item => {
+          csvContent += `${item.unit},${item.session},${item.date},${item.subject},`;
+          for (let i = 0; i < appData.students.length; i++) {
+            const note = item.notes[i] !== undefined ? item.notes[i] : '';
+            csvContent += note + (i < appData.students.length - 1 ? ',' : '');
+          }
+          csvContent += '\n';
+        });
+
+        openTextModal('Exportar CSV',
+          'Copia este texto y pégalo en Excel o Google Sheets (separador coma).',
+          csvContent
+        );
+      });
+
+      // Exportar JSON
+      document.getElementById('export-btn').addEventListener('click', () => {
+        openTextModal('Exportar Datos',
+          'Copia este JSON y guárdalo. Podrás importarlo después.',
+          JSON.stringify(appData, null, 2)
+        );
+      });
+
+      // Importar
+      document.getElementById('import-btn').addEventListener('click', () => openImportModal());
+
+      // Resetear
+      document.getElementById('reset-btn').addEventListener('click', () => {
+        showConfirm('Resetear Todo', '¿Eliminar TODOS los datos? No se puede deshacer.', () => {
+          appData = {
+            students: Array.from({length: 8}, (_, i) => `Alumno ${i + 1}`),
+            units: [],
+            sessions: {},
+            notes: {},
+            trophies: appData.trophies
+          };
+          saveData();
+          renderStudents();
+          updateUnitSelectors();
+          renderNotesTable();
+          renderResults();
+          showToast('Datos reseteados');
+        });
+      });
+
+      // Crear unidad
+      document.getElementById('create-unit-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        const name = prompt('Nombre de la unidad (ej: Unidad 1):');
+        if (!name) return;
+        const unitName = name.trim();
+        if (!unitName) return;
+
+        if (!appData.units.includes(unitName)) {
+          appData.units.push(unitName);
+          appData.sessions[unitName] = [];
+          saveData();
+          updateUnitSelectors();
+          document.getElementById('unit-selector').value = unitName;
+          currentNotesContext.unit = unitName;
+          updateSessionSelectors();
+          showToast('Unidad creada');
+        }
+      });
+
+      // Renombrar unidad
+      document.getElementById('rename-unit-btn').addEventListener('click', () => {
+        const selectedUnit = document.getElementById('unit-selector').value;
+        if (!selectedUnit) return showToast('Selecciona una unidad primero');
+        const newName = prompt('Nuevo nombre:', selectedUnit);
+        if (!newName) return;
+
+        const trimmed = newName.trim();
+        if (!trimmed) return;
+
+        if (trimmed !== selectedUnit) {
+          const idx = appData.units.indexOf(selectedUnit);
+          if (idx !== -1) {
+            appData.units[idx] = trimmed;
+            appData.sessions[trimmed] = appData.sessions[selectedUnit] || [];
+            delete appData.sessions[selectedUnit];
+
+            // Nota: si quieres, también puedo migrarte las keys de notes para que no se pierdan.
+            currentNotesContext.unit = trimmed;
+
+            saveData();
+            updateUnitSelectors();
+            document.getElementById('unit-selector').value = trimmed;
+            updateSessionSelectors();
+            renderResults();
+            showToast('Unidad renombrada');
+          }
+        }
+      });
+
+      // Eliminar unidad
+      document.getElementById('delete-unit-btn').addEventListener('click', () => {
+        const selectedUnit = document.getElementById('unit-selector').value;
+        if (!selectedUnit) return showToast('Selecciona una unidad primero');
+
+        showConfirm('Eliminar Unidad', `¿Eliminar "${selectedUnit}" y sus sesiones?`, () => {
+          const idx = appData.units.indexOf(selectedUnit);
+          if (idx !== -1) {
+            delete appData.sessions[selectedUnit];
+            appData.units.splice(idx, 1);
+
+            // limpiar contexto
+            currentNotesContext.unit = null;
+            currentNotesContext.session = null;
+
+            saveData();
+            updateUnitSelectors();
+            document.getElementById('unit-selector').value = '';
+            updateSessionSelectors();
+            renderNotesTable();
+            renderResults();
+            showToast('Unidad eliminada');
+          }
+        });
+      });
+
+      // Añadir sesión
+      document.getElementById('add-session-notes-btn').addEventListener('click', () => {
+        const selectedUnit = document.getElementById('unit-selector').value;
+        if (!selectedUnit) return showToast('Selecciona una unidad primero');
+
+        const name = prompt('Nombre de la sesión (ej: Sesión 1):');
+        if (!name) return;
+        const date = prompt('Fecha (YYYY-MM-DD):');
+        if (!date) return;
+
+        if (!appData.sessions[selectedUnit]) appData.sessions[selectedUnit] = [];
+        appData.sessions[selectedUnit].push({ name: name.trim(), date: date.trim() });
+
+        saveData();
+        updateSessionSelectors();
+        showToast('Sesión añadida');
+      });
+
+      // Editar sesión
+      document.getElementById('edit-session-btn').addEventListener('click', () => {
+        const selectedUnit = document.getElementById('unit-selector').value;
+        const selectedSession = document.getElementById('session-selector').value;
+        if (!selectedUnit || !selectedSession) return showToast('Selecciona una unidad y sesión primero');
+
+        const sessions = appData.sessions[selectedUnit] || [];
+        const sessionObj = sessions.find(s => (typeof s === 'string' ? s : s.name) === selectedSession);
+        if (!sessionObj) return;
+
+        const currentName = typeof sessionObj === 'string' ? sessionObj : sessionObj.name;
+        const currentDate = typeof sessionObj === 'string' ? '' : sessionObj.date;
+
+        const newName = prompt('Nuevo nombre:', currentName);
+        if (!newName) return;
+        const newDate = prompt('Nueva fecha (YYYY-MM-DD):', currentDate);
+        if (!newDate) return;
+
+        const idx = sessions.indexOf(sessionObj);
+        if (idx !== -1) {
+          sessions[idx] = { name: newName.trim(), date: newDate.trim() };
+          saveData();
+          updateSessionSelectors();
+          showToast('Sesión actualizada');
+        }
+      });
+
+      // Eliminar sesión
+      document.getElementById('delete-session-notes-btn').addEventListener('click', () => {
+        const selectedUnit = document.getElementById('unit-selector').value;
+        const selectedSession = document.getElementById('session-selector').value;
+        if (!selectedUnit || !selectedSession) return showToast('Selecciona una unidad y sesión primero');
+
+        showConfirm('Eliminar Sesión', `¿Eliminar "${selectedSession}"?`, () => {
+          const sessions = appData.sessions[selectedUnit] || [];
+          const idx = sessions.findIndex(s => (typeof s === 'string' ? s : s.name) === selectedSession);
+          if (idx !== -1) {
+            sessions.splice(idx, 1);
+            currentNotesContext.session = null;
+            saveData();
+            updateSessionSelectors();
+            document.getElementById('session-selector').value = '';
+            renderNotesTable();
+            renderResults();
+            showToast('Sesión eliminada');
+          }
+        });
+      });
+
+      // Limpiar notas
+      document.getElementById('clear-notes-btn').addEventListener('click', () => {
+        const unit = currentNotesContext.unit;
+        const session = currentNotesContext.session;
+        const subject = currentNotesContext.subject;
+        if (!unit || !session) return showToast('Selecciona una unidad y sesión');
+
+        showConfirm('Limpiar Notas', `¿Limpiar todas las notas de ${session} - ${subject}?`, () => {
+          delete appData.notes[`${unit}|${session}|${subject}`];
+          saveData();
+          renderNotesTable();
+          renderResults();
+          showToast('Notas limpiadas');
+        });
+      });
+
+      // Modal confirmación
+      document.getElementById('modal-cancel').addEventListener('click', () => {
+        document.getElementById('confirm-modal').classList.remove('active');
+        confirmCallback = null;
+      });
+
+      document.getElementById('modal-confirm').addEventListener('click', () => {
+        document.getElementById('confirm-modal').classList.remove('active');
+        if (confirmCallback) {
+          confirmCallback();
+          confirmCallback = null;
+        }
+      });
+
+      document.getElementById('confirm-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'confirm-modal') {
+          document.getElementById('confirm-modal').classList.remove('active');
+          confirmCallback = null;
+        }
+      });
+
+      // Render inicial de notas
+      renderNotesTable();
+
+      // Modales export/import (sin depender de libs)
+      function openTextModal(title, help, text){
+        const modal = document.createElement('div');
+        modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:2000;padding:20px;';
+        modal.innerHTML = `
+          <div style="background:white;border-radius:12px;padding:24px;max-width:800px;width:100%;max-height:80%;display:flex;flex-direction:column;">
+            <h3 style="margin:0 0 16px 0;font-size:18px;">${escapeHtml(title)}</h3>
+            <p style="margin:0 0 12px 0;color:#6b7280;font-size:14px;">${escapeHtml(help)}</p>
+            <textarea readonly style="flex:1;min-height:300px;padding:12px;border:2px solid #e5e7eb;border-radius:8px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;resize:none;margin-bottom:16px;">${text}</textarea>
+            <div style="display:flex;gap:12px;justify-content:flex-end;">
+              <button class="btn-primary" data-action="copy">Copiar</button>
+              <button class="btn-secondary" data-action="close">Cerrar</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+
+        modal.addEventListener('click', async (e) => {
+          const btn = e.target.closest('button');
+          if (!btn) return;
+          const action = btn.dataset.action;
+          if (action === 'close') modal.remove();
+          if (action === 'copy') {
+            const ta = modal.querySelector('textarea');
+            try {
+              await navigator.clipboard.writeText(ta.value);
+              showToast('Copiado al portapapeles');
+            } catch {
+              ta.select();
+              document.execCommand('copy');
+              showToast('Copiado al portapapeles');
+            }
+          }
+        });
+      }
+
+      function openImportModal(){
+        const modal = document.createElement('div');
+        modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:2000;padding:20px;';
+        modal.innerHTML = `
+          <div style="background:white;border-radius:12px;padding:24px;max-width:600px;width:100%;max-height:80%;display:flex;flex-direction:column;">
+            <h3 style="margin:0 0 16px 0;font-size:18px;">Importar Datos</h3>
+            <p style="margin:0 0 12px 0;color:#6b7280;font-size:14px;">Pega aquí el JSON exportado:</p>
+            <textarea placeholder="Pega los datos aquí..." style="flex:1;min-height:300px;padding:12px;border:2px solid #e5e7eb;border-radius:8px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;resize:none;margin-bottom:16px;"></textarea>
+            <div style="display:flex;gap:12px;justify-content:flex-end;">
+              <button class="btn-secondary" data-action="cancel">Cancelar</button>
+              <button class="btn-primary" data-action="import">Importar</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+
+        const ta = modal.querySelector('textarea');
+        setTimeout(() => ta.focus(), 50);
+
+        modal.addEventListener('click', (e) => {
+          const btn = e.target.closest('button');
+          if (!btn) return;
+          const action = btn.dataset.action;
+          if (action === 'cancel') modal.remove();
+          if (action === 'import') {
+            const txt = ta.value.trim();
+            if (!txt) return showToast('No has pegado ningún dato');
+            try {
+              const imported = JSON.parse(txt);
+              appData = { ...appData, ...imported };
+              saveData();
+              renderStudents();
+              updateUnitSelectors();
+              updateSessionSelectors();
+              renderNotesTable();
+              renderResults();
+              modal.remove();
+              showToast('Datos importados correctamente');
+            } catch {
+              showToast('Error: formato incorrecto');
+            }
+          }
+        });
+      }
     });
   </script>
 </body>
